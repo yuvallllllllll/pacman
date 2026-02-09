@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d0834124-d2b4-4195-a7cb-027025e2c067" name="Changes" comment="finished first part&#10;now working on moving the ghost">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/characters.py" beforeDir="false" afterPath="$PROJECT_DIR$/characters.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pacman.py" beforeDir="false" afterPath="$PROJECT_DIR$/pacman.py" afterDir="false" />
-    </list>
+    <list default="true" id="d0834124-d2b4-4195-a7cb-027025e2c067" name="Changes" comment="need to finish working on ghost" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -142,13 +138,22 @@
       <option name="project" value="LOCAL‎" />
       <updated>1770657615569</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL‎-00006" summary="need to finish working on ghost">
+      <option name="closed" value="true" />
+      <created>1770659793674</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL‎-00006" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1770659793674</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="try" />
     <MESSAGE value="made half of on_update made move and key press" />
     <MESSAGE value="finished first part&#10;now working on moving the ghost" />
-    <option name="LAST_COMMIT_MESSAGE" value="finished first part&#10;now working on moving the ghost" />
+    <MESSAGE value="need to finish working on ghost" />
+    <option name="LAST_COMMIT_MESSAGE" value="need to finish working on ghost" />
   </component>
 </project>
