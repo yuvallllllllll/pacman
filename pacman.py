@@ -1,24 +1,19 @@
 
 import arcade
 from characters import *
+from const import *
 
-WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 600
-TILE_SIZE = 32
 
-MAP = [
-    "########################",
-    "#..........##..........#",
-    "#.####.###.##.###.####.#",
-    "#P....................G#",
-    "########################",
-]
+
 
 
 class PacmanGame(arcade.View):
     def __init__(self):
         super().__init__()
+        self.change_x = 0
+        self.change_y = 0
         self.game_over = False
+        self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
         self.coin_list = arcade.SpriteList()
         self.ghost_list = arcade.SpriteList()
@@ -28,6 +23,7 @@ class PacmanGame(arcade.View):
         self.wall_list = arcade.SpriteList()
         self.coin_list = arcade.SpriteList()
         self.ghost_list = arcade.SpriteList()
+        self.player_list = arcade.SpriteList()
         rows = len(MAP)
         for row_index, row in enumerate(MAP):
             for col_index, char in enumerate(row):
@@ -42,17 +38,18 @@ class PacmanGame(arcade.View):
                     self.ghost_list.append(Ghost(x, y))
                 elif char == "P":
                     self.player = Player(x,y)
+                    self.player_list.append(self.player)
 
     def on_key_press(self, key, modifiers):
-        if self.game_over == False:
+        if not self.game_over:
             if arcade.key.UP == key:
-                self.change_y = + 1
+                self.change_y = 1
             elif arcade.key.DOWN == key:
-                self.change_y = - 1
+                self.change_y = -1
             elif arcade.key.RIGHT == key:
-                self.change_x = + 1
+                self.change_x = 1
             elif arcade.key.LEFT == key:
-                self.change_x = - 1
+                self.change_x = -1
         else:
             if arcade.key.SPACE == key:
                 self.game_over = False
@@ -64,15 +61,18 @@ class PacmanGame(arcade.View):
         if arcade.check_for_collision_with_list(self.player, self.wall_list):
             self.player.center_x = Temporary_center_x
             self.player.center_y = Temporary_center_y
+        for coin in arcade.check_for_collision_with_list(self.player, self.coin_list):
+            coin.remove_from_sprite_lists()
 
 
 
     def on_draw(self):
-        self.clear(self.background_color)
+        self.clear()
         self.wall_list.draw()
         self.coin_list.draw()
         self.ghost_list.draw()
         self.player_list.draw()
+
 
 
     def on_key_release(self, key, modifiers):
