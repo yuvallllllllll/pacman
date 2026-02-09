@@ -1,5 +1,6 @@
 
 import arcade
+from characters import *
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
@@ -17,17 +18,16 @@ MAP = [
 class PacmanGame(arcade.View):
     def __init__(self):
         super().__init__()
+        self.game_over = False
         self.wall_list = arcade.SpriteList()
         self.coin_list = arcade.SpriteList()
         self.ghost_list = arcade.SpriteList()
-        self.player_list = arcade.SpriteList()
         self.background_color = arcade.color.BLACK
 
     def setup(self):
         self.wall_list = arcade.SpriteList()
         self.coin_list = arcade.SpriteList()
         self.ghost_list = arcade.SpriteList()
-        self.player_list = arcade.SpriteList()
         rows = len(MAP)
         for row_index, row in enumerate(MAP):
             for col_index, char in enumerate(row):
@@ -41,7 +41,31 @@ class PacmanGame(arcade.View):
                 elif char == "G":
                     self.ghost_list.append(Ghost(x, y))
                 elif char == "P":
-                    self.player_list.append(Player(x, y))
+                    self.player = Player(x,y)
+
+    def on_key_press(self, key, modifiers):
+        if self.game_over == False:
+            if arcade.key.UP == key:
+                self.change_y = + 1
+            elif arcade.key.DOWN == key:
+                self.change_y = - 1
+            elif arcade.key.RIGHT == key:
+                self.change_x = + 1
+            elif arcade.key.LEFT == key:
+                self.change_x = - 1
+        else:
+            if arcade.key.SPACE == key:
+                self.game_over = False
+
+    def on_update(self, delta_time):
+        Temporary_center_y = self.player.center_y
+        Temporary_center_x = self.player.center_x
+        self.player.player_move(self.change_x,self.change_y)
+        if arcade.check_for_collision_with_list(self.player, self.wall_list):
+            self.player.center_x = Temporary_center_x
+            self.player.center_y = Temporary_center_y
+
+
 
     def on_draw(self):
         self.clear(self.background_color)
@@ -51,33 +75,13 @@ class PacmanGame(arcade.View):
         self.player_list.draw()
 
 
-class Wall(arcade.Sprite):
-    def __init__(self, x, y):
-        super().__init__()
-        self.texture = arcade.make_soft_square_texture(TILE_SIZE, arcade.color.BLUE, 255, 0)
-        self.center_x = x
-        self.center_y = y
+    def on_key_release(self, key, modifiers):
+        if arcade.key.UP == key:
+            self.change_y = 0
+        elif arcade.key.DOWN == key:
+            self.change_y = 0
+        elif arcade.key.RIGHT == key:
+            self.change_x = 0
+        elif arcade.key.LEFT == key:
+            self.change_x = 0
 
-
-class Coin(arcade.Sprite):
-    def __init__(self, x, y):
-        super().__init__()
-        self.texture = arcade.make_circle_texture(TILE_SIZE - 20, arcade.color.GOLD)
-        self.center_x = x
-        self.center_y = y
-
-
-class Ghost(arcade.Sprite):
-    def __init__(self, x, y):
-        super().__init__()
-        self.texture = arcade.make_circle_texture(TILE_SIZE - 10, arcade.color.RED)
-        self.center_x = x
-        self.center_y = y
-
-
-class Player(arcade.Sprite):
-    def __init__(self, x, y):
-        super().__init__()
-        self.texture = arcade.make_circle_texture(TILE_SIZE - 10, arcade.color.YELLOW )
-        self.center_x = x
-        self.center_y = y
