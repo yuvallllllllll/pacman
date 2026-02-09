@@ -1,6 +1,7 @@
 from const import *
 import arcade
 import random
+import time
 
 class Wall(arcade.Sprite):
     def __init__(self, x, y):
@@ -25,6 +26,24 @@ class Ghost(arcade.Sprite):
         self.center_x = x
         self.center_y = y
         self.speed = speed
+        self.time_to_move = 2
+
+    def ghost_move(self,time_delta):
+        self.time_to_move -= time_delta
+        random_choice = random.choices(["UP","DOWN","RIGHT","LEFT"])
+        if self.time_to_move <= 0:
+            if random_choice == "UP":
+                self.center_y += 1 * self.speed
+            if random_choice == "DOWN":
+                self.center_y -= 1 * self.speed
+            if random_choice == "RIGHT":
+                self.center_x += 1 * self.speed
+            if random_choice == "LEFT":
+                self.center_x -= 1 * self.speed
+            self.time_to_move = 2
+
+
+
 
 
 class Player(arcade.Sprite):

@@ -35,7 +35,8 @@ class PacmanGame(arcade.View):
                 elif char == ".":
                     self.coin_list.append(Coin(x, y))
                 elif char == "G":
-                    self.ghost_list.append(Ghost(x, y))
+                    self.ghost = Ghost(x,y)
+                    self.ghost_list.append(self.ghost)
                 elif char == "P":
                     self.player = Player(x,y)
                     self.player_list.append(self.player)
@@ -63,6 +64,15 @@ class PacmanGame(arcade.View):
             self.player.center_y = Temporary_center_y
         for coin in arcade.check_for_collision_with_list(self.player, self.coin_list):
             coin.remove_from_sprite_lists()
+
+
+        for i in self.ghost_list:
+            ghost_x = self.ghost.center_y
+            ghost_y = self.ghost.center_x
+            i.ghost_move(delta_time)
+            if arcade.check_for_collision_with_list(i, self.wall_list):
+                i.center_x = ghost_x
+                i.center_y = ghost_y
 
 
 
