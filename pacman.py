@@ -9,6 +9,7 @@ class PacmanGame(arcade.View):
         self.change_x = 0
         self.change_y = 0
         self.game_over = False
+        self.point = 0
 
         # Initialize lists
         self.player_list = arcade.SpriteList()
@@ -77,10 +78,10 @@ class PacmanGame(arcade.View):
             self.change_x = 0
 
     def on_update(self, delta_time):
-        arcade.draw_text("Points: ", WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 + 50, arcade.color.WHITE,font_size=10, anchor_x="center")
 
         if self.game_over:
             return
+
 
         old_px, old_py = self.player.center_x, self.player.center_y
         self.player.player_move(self.change_x, self.change_y)
@@ -90,7 +91,8 @@ class PacmanGame(arcade.View):
         coins_hit = arcade.check_for_collision_with_list(self.player, self.coin_list)
         for coin in coins_hit:
             coin.remove_from_sprite_lists()
-
+            if arcade.check_for_collision(self.player, coin):
+                self.point = self.point + 1
         for ghost in self.ghost_list:
             old_gx, old_gy = ghost.center_x, ghost.center_y
             ghost.ghost_move(delta_time)
