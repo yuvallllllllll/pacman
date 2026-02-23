@@ -1,10 +1,6 @@
-
 import arcade
-from characters import *
 from const import *
-
-
-
+from characters import *
 
 
 class PacmanGame(arcade.View):
@@ -13,17 +9,24 @@ class PacmanGame(arcade.View):
         self.change_x = 0
         self.change_y = 0
         self.game_over = False
+
+        # Initialize lists
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
         self.coin_list = arcade.SpriteList()
         self.ghost_list = arcade.SpriteList()
-        self.background_color = arcade.color.BLACK
 
     def setup(self):
+        self.game_over = False
+        self.change_x = 0
+        self.change_y = 0
+
+        # Clear and rebuild lists
+        self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
         self.coin_list = arcade.SpriteList()
         self.ghost_list = arcade.SpriteList()
-        self.player_list = arcade.SpriteList()
+
         rows = len(MAP)
         for row_index, row in enumerate(MAP):
             for col_index, char in enumerate(row):
@@ -35,46 +38,10 @@ class PacmanGame(arcade.View):
                 elif char == ".":
                     self.coin_list.append(Coin(x, y))
                 elif char == "G":
-                    self.ghost = Ghost(x,y)
-                    self.ghost_list.append(self.ghost)
+                    self.ghost_list.append(Ghost(x, y))
                 elif char == "P":
-                    self.player = Player(x,y)
+                    self.player = Player(x, y)
                     self.player_list.append(self.player)
-
-    def on_key_press(self, key, modifiers):
-        if not self.game_over:
-            if arcade.key.UP == key:
-                self.change_y = 1
-            elif arcade.key.DOWN == key:
-                self.change_y = -1
-            elif arcade.key.RIGHT == key:
-                self.change_x = 1
-            elif arcade.key.LEFT == key:
-                self.change_x = -1
-        else:
-            if arcade.key.SPACE == key:
-                self.game_over = False
-
-    def on_update(self, delta_time):
-        Temporary_center_y = self.player.center_y
-        Temporary_center_x = self.player.center_x
-        self.player.player_move(self.change_x,self.change_y)
-        if arcade.check_for_collision_with_list(self.player, self.wall_list):
-            self.player.center_x = Temporary_center_x
-            self.player.center_y = Temporary_center_y
-        for coin in arcade.check_for_collision_with_list(self.player, self.coin_list):
-            coin.remove_from_sprite_lists()
-
-
-        for i in self.ghost_list:
-            ghost_x = self.ghost.center_y
-            ghost_y = self.ghost.center_x
-            i.ghost_move(delta_time)
-            if arcade.check_for_collision_with_list(i, self.wall_list):
-                i.center_x = ghost_x
-                i.center_y = ghost_y
-
-
 
     def on_draw(self):
         self.clear()
@@ -83,15 +50,54 @@ class PacmanGame(arcade.View):
         self.ghost_list.draw()
         self.player_list.draw()
 
+        if self.game_over:
+            arcade.draw_text("GAME OVER: YOU LOSE", WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 + 50,arcade.color.RED, font_size=40, anchor_x="center")
 
+            arcade.draw_text("Press SPACE to Play Again", WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 - 5,arcade.color.WHITE, font_size=20, anchor_x="center")
+
+    def on_key_press(self, key, modifiers):
+        if self.game_over:
+            if key == arcade.key.SPACE:
+                self.setup()
+            return
+
+        if key == arcade.key.UP:
+            self.change_y = 1
+        elif key == arcade.key.DOWN:
+            self.change_y = -1
+        elif key == arcade.key.RIGHT:
+            self.change_x = 1
+        elif key == arcade.key.LEFT:
+            self.change_x = -1
 
     def on_key_release(self, key, modifiers):
-        if arcade.key.UP == key:
+        if key in [arcade.key.UP, arcade.key.DOWN]:
             self.change_y = 0
-        elif arcade.key.DOWN == key:
-            self.change_y = 0
-        elif arcade.key.RIGHT == key:
-            self.change_x = 0
-        elif arcade.key.LEFT == key:
+        elif key in [arcade.key.RIGHT, arcade.key.LEFT]:
             self.change_x = 0
 
+    def on_update(self, delta_time):
+        arcade.draw_text("Points: ", WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 + 50, arcade.color.WHITE,font_size=10, anchor_x="center")
+
+        if self.game_over:
+            return
+
+        old_px, old_py = self.player.center_x, self.player.center_y
+        self.player.player_move(self.change_x, self.change_y)
+        if arcade.check_for_collision_with_list(self.player, self.wall_list):
+            self.player.center_x, self.player.center_y = old_px, old_py
+
+        coins_hit = arcade.check_for_collision_with_list(self.player, self.coin_list)
+        for coin in coins_hit:
+            coin.remove_from_sprite_lists()
+
+        for ghost in self.ghost_list:
+            old_gx, old_gy = ghost.center_x, ghost.center_y
+            ghost.ghost_move(delta_time)
+
+            if arcade.check_for_collision_with_list(ghost, self.wall_list):
+                ghost.center_x, ghost.center_y = old_gx, old_gy
+                ghost.time_to_change = 0
+
+            if arcade.check_for_collision(self.player, ghost):
+                self.game_over = True
