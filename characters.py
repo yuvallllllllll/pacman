@@ -54,3 +54,5 @@ class Player(arcade.Sprite):
     def player_move(self, change_x, change_y):
         self.center_x += change_x * self.speed
         self.center_y += change_y * self.speed
+
+
